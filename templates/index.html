@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stock Request API</title>
+    <link rel="shortcut icon" type="image/jpg" href="https://www.pngitem.com/pimgs/m/78-787571_stocks-market-icon-stock-exchanges-icon-hd-png.png"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+      function removeDivbutton () {
+        $(this).removeClass('button is-primary');
+        $(this).toggleClass('button is-primary is-loading');
+        $('.close-div').on('click', function(){
+            $(this).closest("#nocontent").remove();
+        });
+      };
+      function myFunction () {
+        $(this).removeClass('button is-primary');
+        $(this).toggleClass('button is-primary is-loading');
+      };
+      updateList = function() {
+        var input = document.getElementById('file');
+        var output = document.getElementById('fileList');
+
+        output.innerHTML = '<ul>';
+        for (var i = 0; i < input.files.length; ++i) {
+          output.innerHTML += input.files.item(i).name;
+        }
+        output.innerHTML += '</ul>';
+      };
+      $(document).ready(function() {
+        // Check for click events on the navbar burger icon
+        $(".navbar-burger").click(function() {
+
+            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+            $(".navbar-burger").toggleClass("is-active");
+            $(".navbar-menu").toggleClass("is-active");
+
+        });
+      });
+    </script>
+    <style>
+    #image {
+      width:60px;
+      height:40px;
+    }
+    #mark {
+      background: none;
+    }
+    #mainsection {
+        margin-left: auto;
+        margin-right: 40;
+      }
+    #filebutton {
+      margin-top: -7px;
+    }
+    @media screen and (max-width: 739px) {
+       #chart {
+         width: 340px;
+         height: 180px;
+       }
+       #mainsection {
+           display: none;
+        }
+        #ticker {
+          width:83%;
+        }
+     }
+     @media screen and (min-width: 740px) {
+       #chart {
+         width: 550px;
+         height: 350px;
+       }
+       #ticker {
+         width:30%;
+       }
+       .subtitle is-5 {
+         font-size: 10px;
+       }
+
+      }
+    </style>
+  </head>
+
+  <section class="hero is-link">
+    <nav class="navbar is-primary has-background-dark">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="{{ url_for('home') }}">
+        <img src="https://cdn-icons-png.flaticon.com/512/3781/3781647.png" alt="Kenan Stock API">
+      </a>
+      <div class="navbar-burger" data-target="navbarExampleTransparentExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </div>
+    </div>
+    <div id="navbarExampleTransparentExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="is-active navbar-item" href="{{ url_for('home') }}">
+          Stock API
+        </a>
+        <a class="navbar-item" href="{{ url_for('monitor') }}">
+          Stock Monitoring
+        </a>
+        <a class="navbar-item" href="{{ url_for('stocklist') }}">
+          Stock Portfolio
+        </a>
+        <a class="navbar-item" href="{{ url_for('recommendations') }}">
+          Stock Recommendations
+        </a>
+      </div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="field is-grouped">
+            <p class="control">
+              <a class="bd-tw-button button" href="{{ url_for('login') }}">
+                <span class="icon">
+                  <i class="fas fa-user-plus"></i>
+                </span>
+                <span>
+                  Login/Sign Up
+                </span>
+              </a>
+            </p>
+            <p class="control">
+              <a class="button is-primary" href="{{ url_for('loading_model') }}">
+                <span class="icon">
+                  <i class="fas fa-user"></i>
+                </span>
+                <span>Profile</span>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    </nav>
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          Stock API Compiler
+        </h1>
+        <div class="column">
+          <section class="column is-half is-pulled-left">
+            <h1 class="subtitle" style=strong><strong>Single Stock Input</strong></h1>
+            <label class="text">Input Ticker</label>
+            <form action="{{ url_for('submit') }}" method="post" >
+                {% if stock_yahoo %}
+                <input class="input" id="ticker" type="text" name="ticker" value={{ stock_yahoo.ticker }}></input>
+                {% else %}
+                <input class="input" id="ticker" type="text" name="ticker" placeholder="MSFT">
+                {% endif %}
+                <br><br>
+                <button onclick="myFunction.call(this)" class="button is-primary" type="submit">Submit</button>
+            </form>
+          </section>
+          <section id="mainsection" class="column is-half">
+            <h1 class="subtitle"><strong>Stock Research</strong></h1>
+            <label class="text">Do some basic research</label>
+                <form action="{{ url_for('research') }}" method="post" >
+                    {% if data %}
+                    <input class="input" id="ticker" type="text" name="ticker" value={{ data.ticker }}></input>
+                    {% else %}
+                    <input class="input" id="ticker" type="text" name="ticker" placeholder="MSFT">
+                    {% endif %}
+                    <br><br>
+                    <button onclick="myFunction.call(this)" class="button is-primary" type="submit">Research</button>
+                </form>
+
+              <br/>
+          </section>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="container">
+      </div>
+    </div>
+  </section>
+  <body>
+  <section class="section">
+    <div class="container">
+      {% if nodata %}
+      <div class="content is-medium">
+          <h3 class="title is-3">{{ nodata }}</h3>
+      </div>
+      {% else %}
+      {% endif %}
+      {% if stock_yahoo %}
+        <div class="content is-medium">
+            <h1 class="has-text-primary"><img id="image" src="{{ stock_yahoo.logo }}">   {{ stock_yahoo.ticker }} - {{ stock_yahoo.company }}</h1>
+            <p>Current Price: ${{ stock_yahoo.price }}</p>
+            {% if stock_profit %}
+            <p>Price After Year: ${{ data.oneYear }} | Profit: <mark id = "mark" class="has-text-danger">${{ data.one_year_profit }}</mark></p>
+            {% else %}
+            <p>Price After Year: ${{ data.oneYear }} | Profit: <mark id = "mark" class="has-text-success">${{ data.one_year_profit }}</mark></p>
+            {% endif %}
+
+            {% if stock_profit %}
+            <p>Price After Five Years: ${{ data.fiveYear }} | Profit: <mark id = "mark" class="has-text-danger">${{ data.five_year_profit }}</mark></p>
+            {% else %}
+            <p>Price After Five Years: ${{ data.fiveYear }} | Profit: <mark id = "mark" class="has-text-success">${{ data.five_year_profit }}</mark></p>
+            {% endif %}
+            <p>Recommendations: {{ stock_yahoo.recommendation }}</p>
+        </div>
+        <canvas id="chart"></canvas>
+        <script>
+
+          // bar chart data
+          var barData = {
+            labels : [
+              {% for item in value %}
+                "{{ item }}",
+              {% endfor %}
+            ],
+
+            datasets : [{
+              {% if stock_profit %}
+                fillColor: "rgba(230, 49, 25,0.4)",
+              {% else %}
+                fillColor: "rgba(66, 173, 141,0.4)",
+              {% endif %}
+              strokeColor: "rgba(151,187,205,1)",
+              pointColor: "rgba(13, 73, 214,1)",
+              pointStrokeColor: "#fff",
+              pointHighlightFill: "#fff",
+              pointHighlightStroke: "rgba(151,187,205,1)",
+              bezierCurve : false,
+              data : [
+    	    {% for item in graph %}
+                  {{ item }},
+                {% endfor %}]
+              }
+    	       ]
+          }
+
+          Chart.defaults.global.animationSteps = 50;
+          Chart.defaults.global.tooltipYPadding = 16;
+          Chart.defaults.global.tooltipCornerRadius = 0;
+          Chart.defaults.global.tooltipTitleFontStyle = "normal";
+          Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
+          Chart.defaults.global.animationEasing = "easeOutBounce";
+          Chart.defaults.global.responsive = false;
+          Chart.defaults.global.scaleLineColor = "black";
+          Chart.defaults.global.scaleFontSize = 16;
+
+          // get bar chart canvas
+          var mychart = document.getElementById("chart").getContext("2d");
+
+          steps = 10
+          max = {{ max }}
+          // draw bar chart
+          var LineChartDemo = new Chart(mychart).Line(barData, {
+            options: {
+              responsive: false,
+            },
+            scaleOverride: true,
+            scaleSteps: steps,
+            scaleStepWidth: Math.ceil(max / steps),
+            scaleStartValue: 0,
+            scaleShowVerticalLines: true,
+            scaleShowGridLines : true,
+            barShowStroke : true,
+            scaleShowLabels: true,
+            bezierCurve: false,
+          });
+        </script>
+      {% elif error %}
+      <div class="content is-medium">
+          <h3 class="title is-3">{{ error }}</h3>
+      </div>
+      {% else %}
+      {% endif %}
+    </div>
+    <div class="container">
+      {% if recs %}
+        <div class="content is-medium">
+            <h1 class="has-text-primary"> {{ recs.ticker }} - {{ recs.company }}</h1>
+            <ul>
+            <li>Price: ${{ recs.price }}</li>
+            <li>Target Price: ${{ recs.targetPrice }}</li>
+            <li>Today's Low: ${{ recs.dayLow }}</li>
+            <li>Market Cap: ${{ recs.marketCap }}</li>
+            <li>Latest News: <a href="{{ recs.link }}">{{ recs.news }}</a></li>
+
+          </dl>
+        </div>
+      {% else %}
+
+      {% endif %}
+    </div>
+    {% if stock_ticker %}
+    <div class="container">
+          <div class="content is-medium">
+            <h3 class="title is-3">Stock Portfolio</h3>
+              <div class="columns">
+              <div class="column">
+                <h4>Stock Ticker</h4>
+                {% for stock_ticker_element in stock_ticker %}
+                   <p class="has-text-primary"> {{ stock_ticker_element }} </p>
+                {% endfor %}
+              </div>
+              <div class="column">
+                <h4>Current Stock Price</h4>
+                {% for stock_price_element in stock_price %}
+                   <p> {{ stock_price_element }} </p>
+                {% endfor %}
+              </div>
+              <div class="column">
+                <h4>Profit After Year</h4>
+                {% for stock_profit_element in stock_profit %}
+                   <p> {{ stock_profit_element }} </p>
+                {% endfor %}
+              </div>
+              <div class="column">
+                <h4>Profit After Five Years</h4>
+                {% for stock_five_element in stock_five %}
+                   <p> {{ stock_five_element }} </p>
+                {% endfor %}
+              </div>
+              </div>
+            {% else %}
+            <div class="content is-medium">
+            </div>
+            {% endif %}
+          </div>
+    </div>
+  </section>
+  </body>
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <p>
+        <strong>Stock Monitoring API Version 0.0.2</strong> by <a href="https://komukllc.com">Kenan Korn</a>.
+      </p>
+    </div>
+  </footer>
+
+</html>

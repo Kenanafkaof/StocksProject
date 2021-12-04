@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stock Request API</title>
+    <link rel="shortcut icon" type="image/jpg" href="https://www.pngitem.com/pimgs/m/78-787571_stocks-market-icon-stock-exchanges-icon-hd-png.png"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+      function removeDivbutton () {
+        $(this).removeClass('button is-primary');
+        $(this).toggleClass('button is-primary is-loading');
+        $('.close-div').on('click', function(){
+            $(this).closest("#nocontent").remove();
+        });
+      };
+      function myFunction () {
+        $(this).removeClass('button is-primary');
+        $(this).toggleClass('button is-primary is-loading');
+      };
+      updateList = function() {
+        var input = document.getElementById('file');
+        var output = document.getElementById('fileList');
+
+        output.innerHTML = '<ul>';
+        for (var i = 0; i < input.files.length; ++i) {
+          output.innerHTML += input.files.item(i).name;
+        }
+        output.innerHTML += '</ul>';
+      };
+      $(document).ready(function() {
+        // Check for click events on the navbar burger icon
+        $(".navbar-burger").click(function() {
+
+            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+            $(".navbar-burger").toggleClass("is-active");
+            $(".navbar-menu").toggleClass("is-active");
+
+        });
+      });
+    </script>
+    <style>
+    #mainsection {
+        margin-left: auto;
+        margin-right: 40;
+      }
+    #filebutton {
+      margin-top: -7px;
+    }
+    @media screen and (max-width: 739px) {
+       #chart {
+         width: 340px;
+         height: 180px;
+       }
+       #mainsection {
+           display: none;
+        }
+        #ticker {
+          width:83%;
+        }
+     }
+     @media screen and (min-width: 740px) {
+       #chart {
+         width: 550px;
+         height: 350px;
+       }
+       #ticker {
+         width:30%;
+       }
+       .subtitle is-5 {
+         font-size: 10px;
+       }
+
+      }
+    </style>
+  </head>
+
+  <section class="hero is-link">
+    <nav class="navbar is-primary has-background-dark">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="{{ url_for('home') }}">
+        <img src="https://cdn-icons-png.flaticon.com/512/3781/3781647.png" alt="Kenan Stock API">
+      </a>
+      <div class="navbar-burger" data-target="navbarExampleTransparentExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </div>
+    </div>
+    <div id="navbarExampleTransparentExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="{{ url_for('home') }}">
+          Stock API
+        </a>
+        <a class="navbar-item" href="{{ url_for('monitor') }}">
+          Stock Monitoring
+        </a>
+        <a class="is-active navbar-item" href="{{ url_for('home') }}">
+          Stock Portfolio
+        </a>
+        <a class="navbar-item" href="{{ url_for('recommendations') }}">
+          Stock Recommendations
+        </a>
+      </div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="field is-grouped">
+            <p class="control">
+              <a class="bd-tw-button button" href="{{ url_for('login') }}">
+                <span class="icon">
+                  <i class="fas fa-user-plus"></i>
+                </span>
+                <span>
+                  Login/Sign Up
+                </span>
+              </a>
+            </p>
+            <p class="control">
+              <a class="button is-primary" href="{{ url_for('loading_model') }}">
+                <span class="icon">
+                  <i class="fas fa-user"></i>
+                </span>
+                <span>Profile</span>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    </nav>
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          Global Stock List
+        </h1>
+        <div class="column">
+          <section class="column is-half is-pulled-left">
+            <h1 class="subtitle" style=strong><strong>See what others are looking at! Prices are based on creation time.</strong></h1>
+            <form action="{{ url_for('submit') }}" method="post" >
+              {% for item in data %}
+              <ol>
+                <ul class="has-text-success has-text-weight-semibold">Ticker: {{item[0]}}</ul>
+                <ul>Current Price: {{item[1]}}</ul>
+                <ul>One Year: {{item[2]}}</ul>
+                <ul>Five Years: {{item[3]}}</ul>
+              </ol>
+              <br>
+              {% endfor %}
+            </form>
+          </section>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="container">
+      </div>
+  </section>
+  <body>
+  </body>
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <p>
+        <strong>Stock Monitoring API Version 0.0.2</strong> by <a href="https://komukllc.com">Kenan Korn</a>.
+      </p>
+    </div>
+  </footer>
+
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/jpg" href="https://www.pngitem.com/pimgs/m/78-787571_stocks-market-icon-stock-exchanges-icon-hd-png.png"/>
+
+    <title>Stock Recommendations</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+      function myFunction () {
+        $(this).removeClass('button is-primary');
+        $(this).toggleClass('button is-primary is-loading');
+      };
+      updateList = function() {
+        var input = document.getElementById('file');
+        var output = document.getElementById('fileList');
+
+        output.innerHTML = '<ul>';
+        for (var i = 0; i < input.files.length; ++i) {
+          output.innerHTML += input.files.item(i).name;
+        }
+        output.innerHTML += '</ul>';
+      }
+      $(document).ready(function() {
+        // Check for click events on the navbar burger icon
+        $(".navbar-burger").click(function() {
+
+            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+            $(".navbar-burger").toggleClass("is-active");
+            $(".navbar-menu").toggleClass("is-active");
+
+        });
+      });
+    </script>
+  </head>
+  <section class="hero is-link">
+    <nav class="navbar is-primary has-background-dark">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="{{ url_for('home') }}">
+        <img src="https://cdn-icons-png.flaticon.com/512/3781/3781647.png" alt="Kenan Stock API">
+      </a>
+      <div class="navbar-burger" data-target="navbarExampleTransparentExample">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    <div id="navbarExampleTransparentExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="{{ url_for('home') }}">
+          Stock API
+        </a>
+        <a class="navbar-item" href="{{ url_for('monitor') }}">
+          Stock Monitoring
+        </a>
+        <a class="navbar-item" href="{{ url_for('stocklist') }}">
+          Stock Portfolio
+        </a>
+        <a class="is-active navbar-item" href="{{ url_for('recommendations') }}">
+          Stock Recommendations
+        </a>
+      </div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="field is-grouped">
+            <p class="control">
+              <a class="bd-tw-button button" href="{{ url_for('login') }}">
+                <span class="icon">
+                  <i class="fas fa-user-plus"></i>
+                </span>
+                <span>
+                  Login/Sign Up
+                </span>
+              </a>
+            </p>
+            <p class="control">
+              <a class="button is-primary" href="{{ url_for('loading_model') }}">
+                <span class="icon">
+                  <i class="fas fa-user"></i>
+                </span>
+                <span>Profile</span>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    </nav>
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          Daily Stock Recommendations
+        </h1>
+      </div>
+      <br>
+    </div>
+  </section>
+  <body>
+
+  <section class="section">
+    <div class="container">
+        <div class="content is-medium">
+          <h4>Stock Recommendations</h4>
+          {% for stock_data_element in stock_data %}
+             <p>{{ stock_data_element }}</p>
+          {% endfor %}
+          <form action="{{ url_for('submitrecommendations') }}" method="post" >
+              <button onclick="myFunction.call(this)" class="button is-primary" type="submit">Check Stock Data</button>
+          </form>
+        </div>
+        <div class="content is-medium">
+        {% if stock_ticker %}
+          <h4>Stock Data</h4>
+          <div class="columns">
+          <div class="column">
+            <h4>Stock Ticker</h4>
+            {% for stock_ticker_element in stock_ticker %}
+               <p> {{ stock_ticker_element }}</p>
+            {% endfor %}
+          </div>
+          <div class="column">
+            <h4>Current Stock Price</h4>
+            {% for stock_price_element in stock_price %}
+               <p> {{ stock_price_element }} </p>
+            {% endfor %}
+          </div>
+          <div class="column">
+            <h4>Profit After Year</h4>
+            {% for stock_profit_element in stock_profit %}
+               <p> {{ stock_profit_element }} </p>
+            {% endfor %}
+          </div>
+          <div class="column">
+            <h4>Profit After Five Years</h4>
+            {% for stock_five_element in stock_five %}
+               <p> {{ stock_five_element }} </p>
+            {% endfor %}
+          </div>
+          </div>
+        {% endif %}
+        </div>
+    </div>
+  </section>
+  </body>
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <p>
+        <strong>Stock Monitoring API Version 0.0.2</strong> by <a href="https://komukllc.com">Kenan Korn</a>.
+      </p>
+    </div>
+  </footer>
+</html>

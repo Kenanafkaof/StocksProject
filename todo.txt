@@ -1,0 +1,4 @@
+1. Basic research integration
+2. Show active page on navbar
+3. Better image/card formatting for make cleaner
+4. Loading screen
