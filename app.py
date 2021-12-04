@@ -735,29 +735,33 @@ def trending():
 @app.route('/research', methods=['GET','POST'])
 def research():
     if request.method == 'POST':
-        global ticker
-        form_data = request.form['ticker']
-        ticker = form_data.lower()
-        main = yf.Ticker(ticker)
-        recs = main.info
-        news = main.news
-        print(news)
-        dump = json.dumps(recs)
-        data = json.loads(dump)
-        dumpSecond = json.dumps(news)
-        dataSecond = json.loads(dumpSecond)
-        print(dataSecond[0]['title'])
-        recs = {
-            'ticker': data['symbol'],
-            'price': data['currentPrice'],
-            'targetPrice': data['targetMeanPrice'],
-            'dayLow': data['dayLow'],
-            'marketCap': data['marketCap'],
-            'company': data['shortName'],
-            'news': dataSecond[0]['title'],
-            'link': dataSecond[0]['link']
-        }
-        return render_template('index.html', recs=recs)
+        try:
+            global ticker
+            form_data = request.form['ticker']
+            ticker = form_data.lower()
+            main = yf.Ticker(ticker)
+            recs = main.info
+            news = main.news
+            dump = json.dumps(recs)
+            data = json.loads(dump)
+            dumpSecond = json.dumps(news)
+            dataSecond = json.loads(dumpSecond)
+            print(dataSecond[0]['title'])
+            recs = {
+                'ticker': data['symbol'],
+                'price': data['currentPrice'],
+                'targetPrice': data['targetMeanPrice'],
+                'dayLow': data['dayLow'],
+                'marketCap': data['marketCap'],
+                'company': data['shortName'],
+                'news': dataSecond[0]['title'],
+                'link': dataSecond[0]['link']
+            }
+            return render_template('index.html', recs=recs)
+        except:
+            recs = 'Lacking stock data'
+            return render_template('index.html', recs=recs)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
